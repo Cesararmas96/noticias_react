@@ -1,43 +1,39 @@
-import React, { Fragment, useState, useEffect } from 'react';
-import Header from './components/Header';
-import Formulario from './components/Formulario';
-import ListadoNoticias from './components/ListadoNoticias';
+import React, { Fragment, useState, useEffect } from "react";
+import Header from "./components/Header";
+import Formulario from "./components/Formulario";
+import ListadoNoticias from "./components/ListadoNoticias";
 
 function App() {
+	// definir la categoria y noticias
+	const [categoria, guardarCategoria] = useState("");
+	const [noticias, guardarNoticias] = useState([]);
 
-  // definir la categoria y noticias
-  const [categoria, guardarCategoria] = useState('');
-  const [noticias, guardarNoticias] = useState([]);
+	useEffect(() => {
+		const consultarAPI = async () => {
+			const url = `https://newsapi.org/v2/top-headlines?country=mx&category=${categoria}&apiKey=1f7cba4b36b94ad283874c933d7fd71c`;
 
-  useEffect(() => {
-    const consultarAPI = async () => {
-      const url = `https://newsapi.org/v2/top-headlines?country=mx&category=${categoria}&apiKey=6c1c1dfcb4a943c7bf481bc628b80153`;
+			const respuesta = await fetch(url);
+			const noticias = await respuesta.json();
 
-      const respuesta = await fetch(url);
-      const noticias = await respuesta.json();
+			console.log(noticias);
+			guardarNoticias(noticias.articles);
 
-      guardarNoticias(noticias.articles);
-    }
-    consultarAPI();
-  }, [categoria]);
+			console.log(noticias.articles);
+		};
+		consultarAPI();
+	}, [categoria]);
 
-  return (
-    <Fragment>
-        <Header 
-          titulo='Buscador de Noticias'
-        />
+	return (
+		<Fragment>
+			<Header titulo="Buscador de Noticias" />
 
-        <div className="container white">
-            <Formulario 
-              guardarCategoria={guardarCategoria}
-            />
+			<div className="container white">
+				<Formulario guardarCategoria={guardarCategoria} />
 
-            <ListadoNoticias 
-              noticias={noticias}
-            />
-        </div>
-    </Fragment>
-  );
+				<ListadoNoticias noticias={noticias} />
+			</div>
+		</Fragment>
+	);
 }
 
 export default App;
